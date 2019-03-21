@@ -8,6 +8,15 @@ verify_ssl = true
 [packages]
 flask = "*"
 flask-restful = "*"
+flask-sqlalchemy = "*"
+flask-mail = "*"
+flask-jwt-extended = "*"
+flask-cache = "*"
+flask-uploads = "*"
+flask-script = "*"
+flask-migrate = "*"
+flask-socketio = "*"
+pymysql = "*"
 
 [requires]
 python_version = "3.7"
