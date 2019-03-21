@@ -1,0 +1,1 @@
+url规则: http://ip:port/api/v1/(bp.name)/xxx
