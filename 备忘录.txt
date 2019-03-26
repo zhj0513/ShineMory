@@ -1,1 +1,5 @@
 url规则: http://ip:port/api/v1/(bp.name)/xxx
+接口返回规则：
+成功：200 不返回 或者 返回{'xx':'xx'}或[{'xx':'xx'},{'xx':'xx'}]
+失败：400 用abort
+

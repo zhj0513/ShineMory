@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_uploads import configure_uploads
 from werkzeug.utils import find_modules, import_string
 
 from config import config
@@ -10,10 +9,6 @@ def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config[config_name])
     app.config.from_pyfile('config.py', silent=True)
-
-    app.jinja_env.trim_blocks = True
-    app.jinja_env.lstrip_blocks = True
-    app.jinja_env.add_extension('jinja2.ext.do')
 
     # celery.init_app(app)
     db.init_app(app)
