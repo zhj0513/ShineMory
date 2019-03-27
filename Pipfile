@@ -17,6 +17,7 @@ flask-script = "*"
 flask-migrate = "*"
 flask-socketio = "*"
 pymysql = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7"
