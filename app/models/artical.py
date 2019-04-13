@@ -9,4 +9,3 @@ class Articles(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('Users', backref=db.backref('articles', cascade="all,delete"))
 
-

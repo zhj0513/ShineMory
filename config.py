@@ -7,6 +7,19 @@ base_dir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     DEBUG = True
     SECRET_KEY = 'hard to guess string'
+    # MAIL SETTING
+    # MAIL_SERVER = 'smtp.test.com'
+    # MAIL_PORT = 587
+    # MAIL_USE_SSL = False
+    # MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    # MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+
+    MAIL_SERVER = 'smtp.qq.com'
+    MAIL_PORT = 465
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = '1264728987@qq.com'
+    MAIL_PASSWORD = 'fiahqxsroytmbaag'
     # JWT SETTING
     JWT_HEADER_NAME = 'Authorization'
     JWT_HEADER_TYPE = 'ShineMory'
@@ -15,9 +28,8 @@ class Config:
     ERROR_404_HELP = False
     # SQLALCHEMY SETTING
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
-    # SQLALCHEMY_ECHO = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JSON_AS_ASCII = False
+    # SQLALCHEMY_ECHO = True
 
 
 class DevelopmentConfig(Config):
