@@ -1,12 +1,12 @@
 import re
 from flask import Blueprint, request, abort
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required
 from flask_restful import Api, Resource
 
 from app import db
 from app.commons.decorators import admin_required
 from app.commons.email import send_mail
-from app.models import Users
+from app.models import User
 
 bp = Blueprint('user', __name__)
 api = Api(bp)
@@ -14,9 +14,10 @@ api = Api(bp)
 
 @api.resource('/admin')
 class AdminOperate(Resource):
+    # @jwt_required
     # @admin_required
     def get(self):  # 获取用户列表
-        users = Users.query.filter_by(authority=0).all()
+        users = User.query.filter_by(authority=0).all()
         return [user.to_dict() for user in users], 200
 
     # @admin_required
@@ -26,15 +27,16 @@ class AdminOperate(Resource):
         name = data.get('username')
         pwd = data.get('password')
         address = data.get('address')
-        user = Users(email=email, username=name, password=pwd, address=address)
+        user = User(email=email, username=name, password=pwd, address=address)
         # abort(400, 'xxxxx')
         user.save_to_db()
         return 200
 
+    # @admin_required
     def put(self):  # 管理员修改用户信息
         data = request.json
         id = data.get('id')
-        user = Users.query.get(id)
+        user = User.query.get(id)
         user.username = data.get('username')
         user.password = data.get('password')
         user.address = data.get('address')
@@ -44,7 +46,7 @@ class AdminOperate(Resource):
     # @admin_required
     def delete(self):  # 删除一个用户
         id = request.args.get('id')
-        user = Users.query.get(id)
+        user = User.query.get(id)
         db.session.delete(user)
         db.session.commit()
 
@@ -56,7 +58,7 @@ class UserLogin(Resource):
         pwd = request.json.get('password')
         if not (email and re.match(r"^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-]+){1,2}$", email)):
             abort(400, '邮箱格式不正确')
-        user = Users.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
         if not user:
             abort(400, '该用户不存在')
         elif user.password != pwd:
@@ -80,7 +82,7 @@ class UserRegister(Resource):
         if pwd != pwd2:
             abort(400, '请重新设置密码')
         address = data.get('address')
-        user = Users(email=email, username=username, password=pwd, address=address)
+        user = User(email=email, username=username, password=pwd, address=address)
         user.save_to_db()
         send_mail('1264728987@qq.com', '注册成功', username)
         return 200

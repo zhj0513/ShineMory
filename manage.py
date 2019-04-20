@@ -13,7 +13,7 @@ manager.add_command('db', MigrateCommand)
 
 @app.route('/')
 def hello():
-    return 'Hello,zhj which is the most handsome boy in the world'
+    return 'Hello,zhj'
 
 
 @manager.shell

@@ -1,7 +1,10 @@
 from app import db
+from app.commons.time_deal import millisecond_timestamp
+from app.extensions import SLBigInteger
+from app.models.follows import Follow
 
 
-class Users(db.Model):
+class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -9,10 +12,18 @@ class Users(db.Model):
     username = db.Column(db.String(32), unique=True)
     password = db.Column(db.String(32))
     address = db.Column(db.String(128))
-    authority = db.Column(db.Integer, default=0)  # 0:用户 1:管理员
+    about_me = db.Column(db.Text)
+    member_since = db.Column(SLBigInteger, default=millisecond_timestamp)
+    ban = db.Column(db.Integer)  # 0:正常 1：封禁
+    # avatar_src = db.Column(db.String(128))  # 头像路径
 
-    # 级联删除
-    # articles = db.relationship('Articles', backref=db.backref('user'), cascade="all,delete")
+    follows = db.relationship('Follow', foreign_keys=[Follow.fan_id], backref=db.backref('fan', lazy='joined'),
+                              cascade="all,delete", lazy='dynamic')
+    fans = db.relationship('Follow', foreign_keys=[Follow.follow_id], backref=db.backref('follow', lazy='joined'),
+                           cascade="all,delete", lazy='dynamic')
+    comments = db.relationship('Comment', backref='user', cascade="all,delete")
+    # 级联删除cascade="all,delete"
+    articles = db.relationship('Article', backref='user', cascade="all,delete")
 
     def save_to_db(self):
         db.session.add(self)

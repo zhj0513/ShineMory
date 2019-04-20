@@ -43,9 +43,9 @@ class DevelopmentConfig(Config):
     #     'mysql+pymysql://root:hzmcdba@172.16.200.215/test?charset=utf8'
     SQLALCHEMY_DATABASE_URI = \
         'mysql+pymysql://root:admin@127.0.0.1/shinemory?charset=utf8'
-    # SQLALCHEMY_POOL_SIZE = 100
-    # SQLALCHEMY_POOL_RECYCLE = 120
-    # SQLALCHEMY_POOL_TIMEOUT = 20
+    SQLALCHEMY_POOL_SIZE = 100
+    SQLALCHEMY_POOL_RECYCLE = 120
+    SQLALCHEMY_POOL_TIMEOUT = 20
 
 
 class TestingConfig(Config):
