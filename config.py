@@ -21,6 +21,7 @@ class Config:
     MAIL_USERNAME = '1264728987@qq.com'
     MAIL_PASSWORD = 'fiahqxsroytmbaag'
     # JWT SETTING
+    # JWT_SECRET_KEY = 'hard to guess'
     JWT_HEADER_NAME = 'Authorization'
     JWT_HEADER_TYPE = 'ShineMory'
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=4)
@@ -29,7 +30,7 @@ class Config:
     # SQLALCHEMY SETTING
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    # SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = True
 
 
 class DevelopmentConfig(Config):

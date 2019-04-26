@@ -33,8 +33,9 @@ class User(db.Model):
         user_dict = {
             'email': self.email,
             'username': self.username,
-            'password': self.password,
             'address': self.address,
-            'authority': self.authority
+            'about_me': self.about_me,
+            'member_since': self.member_since,
+            'ban': self.ban
         }
         return user_dict

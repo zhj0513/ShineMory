@@ -8,3 +8,11 @@ class Admin(db.Model):
     email = db.Column(db.String(64), unique=True)
     username = db.Column(db.String(32), unique=True)
     password = db.Column(db.String(64))
+
+    def to_dict(self):
+        admin_dict = {
+            'id': self.id,
+            'email': self.email,
+            'username': self.username
+        }
+        return admin_dict
