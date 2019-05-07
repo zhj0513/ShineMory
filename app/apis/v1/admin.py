@@ -5,6 +5,7 @@ from flask_restful import Api, Resource
 from sqlalchemy import or_
 
 from app import db
+from app.commons.decorators import admin_required
 from app.models import User, Admin
 
 bp = Blueprint('admin', __name__)
@@ -14,7 +15,7 @@ api = Api(bp)
 @api.resource('/admin')
 class AdminOperate(Resource):
     @jwt_required
-    # @admin_required
+    @admin_required
     def get(self):  # 获取用户列表
         search = request.args.get('search')
         if search:
@@ -24,7 +25,8 @@ class AdminOperate(Resource):
             users = User.query.all()
         return [user.to_dict() for user in users], 200
 
-    # @admin_required
+    @jwt_required
+    @admin_required
     def post(self):  # 新增一个用户
         data = request.json
         email = data.get('email')
@@ -38,7 +40,8 @@ class AdminOperate(Resource):
         user.save_to_db()
         return 200
 
-    # @admin_required
+    @jwt_required
+    @admin_required
     def put(self):  # 管理员修改用户信息
         data = request.json
         id = data.get('id')
@@ -48,7 +51,18 @@ class AdminOperate(Resource):
         user.save_to_db()
         return 200
 
-    # @admin_required
+    @jwt_required
+    @admin_required
+    def patch(self):  # 管理员禁用一个用户
+        data = request.json
+        id = data.get('id')
+        user = User.query.get(id)
+        user.ban = data.get('ban', 0)
+        user.save_to_db()
+        return 200
+
+    @jwt_required
+    @admin_required
     def delete(self):  # 删除一个用户
         id = request.args.get('id')
         user = User.query.get(id)

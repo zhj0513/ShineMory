@@ -1,10 +1,11 @@
+import os
+
 import re
-from flask import Blueprint, request, abort
-from flask_jwt_extended import create_access_token, jwt_required
+from flask import Blueprint, request, abort, current_app
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from flask_restful import Api, Resource
 
-from app import db
-from app.commons.decorators import admin_required
+from app import db, avatars
 from app.commons.email import send_mail
 from app.models import User
 
@@ -24,6 +25,8 @@ class UserLogin(Resource):
             abort(400, '该用户不存在')
         elif user.password != pwd:
             abort(400, '密码验证错误')
+        elif user.ban == 1:
+            abort(400, '该用户已被管理员禁用')
 
         access_token = create_access_token(identity=user.to_dict())
         result = {'id': user.id, 'username': user.username, 'access_token': access_token}
@@ -50,4 +53,26 @@ class UserRegister(Resource):
         user = User(email=email, username=username, password=pwd, address=address)
         user.save_to_db()
         send_mail(user.email, '注册成功', username)
+        return 200
+
+
+@api.resource('/userInfo')
+class UserInfo(Resource):
+    @jwt_required
+    def patch(self):  # 用户上传头像
+        current_user = get_jwt_identity()
+        username = current_user.get('username')
+        user = User.query.filter_by(username=username).first()
+        file = request.files['avatar']
+        print(file.filename)
+        filename = username + '.' + file.filename.rsplit('.', 1)[1]
+        file_path = os.path.join(current_app.config['UPLOADED_AVATARS_DEST'], filename)
+        try:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+            filename = avatars.save(request.files['avatar'], name=username+'.')
+            user.avatar_src = os.path.join(request.url_root, 'static', 'avatar', filename)
+        except Exception:
+            abort(400, '文件格式错误或文件名全为中文字符')
+        user.save_to_db()
         return 200

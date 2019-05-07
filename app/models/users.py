@@ -14,8 +14,8 @@ class User(db.Model):
     address = db.Column(db.String(128))
     about_me = db.Column(db.Text)
     member_since = db.Column(SLBigInteger, default=millisecond_timestamp)
-    ban = db.Column(db.Integer)  # 0:正常 1：封禁
-    # avatar_src = db.Column(db.String(128))  # 头像路径
+    ban = db.Column(db.Integer, default=0)  # 0:正常 1：封禁
+    avatar_src = db.Column(db.String(128))  # 头像路径
 
     follows = db.relationship('Follow', foreign_keys=[Follow.fan_id], backref=db.backref('fan', lazy='joined'),
                               cascade="all,delete", lazy='dynamic')
@@ -36,6 +36,7 @@ class User(db.Model):
             'address': self.address,
             'about_me': self.about_me,
             'member_since': self.member_since,
-            'ban': self.ban
+            'ban': self.ban,
+            'avatar_src': self.avatar_src
         }
         return user_dict
