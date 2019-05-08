@@ -59,6 +59,28 @@ class UserRegister(Resource):
 @api.resource('/userInfo')
 class UserInfo(Resource):
     @jwt_required
+    def get(self):  # 获取用户个人信息
+        current_user = get_jwt_identity()
+        username = current_user.get('username')
+        user = User.query.filter_by(username=username).first()
+        return user.to_user_info_dict()
+
+    @jwt_required
+    def post(self):  # 修改用户信息
+        current_user = get_jwt_identity()
+        id = current_user.get('id')
+        user = User.query.get(id)
+        data = request.json
+        if not User.query.filter_by(username=data.get('username')).first():
+            user.username = data.get('username')
+        else:
+            abort(400, '用户名已存在')
+        user.address = data.get('address', user.address)
+        user.about_me = data.get('about_me', user.about_me)
+        user.save_to_db()
+        return 200
+
+    @jwt_required
     def patch(self):  # 用户上传头像
         current_user = get_jwt_identity()
         username = current_user.get('username')

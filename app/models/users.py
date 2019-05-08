@@ -21,9 +21,9 @@ class User(db.Model):
                               cascade="all,delete", lazy='dynamic')
     fans = db.relationship('Follow', foreign_keys=[Follow.follow_id], backref=db.backref('follow', lazy='joined'),
                            cascade="all,delete", lazy='dynamic')
-    comments = db.relationship('Comment', backref='user', cascade="all,delete")
+    comments = db.relationship('Comment', backref='user', cascade="all,delete", lazy='dynamic')
     # 级联删除cascade="all,delete"
-    articles = db.relationship('Article', backref='user', cascade="all,delete")
+    articles = db.relationship('Article', backref='user', cascade="all,delete", lazy='dynamic')  # 若没加lazy='dynamic'懒查询,则不能用count()
 
     def save_to_db(self):
         db.session.add(self)
@@ -31,6 +31,7 @@ class User(db.Model):
 
     def to_dict(self):
         user_dict = {
+            'id': self.id,
             'email': self.email,
             'username': self.username,
             'address': self.address,
@@ -38,5 +39,20 @@ class User(db.Model):
             'member_since': self.member_since,
             'ban': self.ban,
             'avatar_src': self.avatar_src
+        }
+        return user_dict
+
+    def to_user_info_dict(self):
+        user_dict = {
+            'id': self.id,
+            'email': self.email,
+            'username': self.username,
+            'address': self.address,
+            'about_me': self.about_me,
+            'member_since': self.member_since,
+            'avatar_src': self.avatar_src,
+            'articles_num': self.articles.count(),
+            'follows_num': self.follows.count(),
+            'fans_num': self.fans.count()
         }
         return user_dict
