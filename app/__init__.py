@@ -3,7 +3,7 @@ from flask_uploads import configure_uploads, patch_request_class
 from werkzeug.utils import find_modules, import_string
 
 from config import config
-from .extensions import db, mail, jwt, avatars
+from .extensions import db, mail, jwt, avatars, pics, videos
 
 
 def create_app(config_name):
@@ -17,6 +17,8 @@ def create_app(config_name):
     jwt.init_app(app)
     patch_request_class(app)  # 限制上传文件大小，默认16MB
     configure_uploads(app, avatars)
+    configure_uploads(app, pics)
+    configure_uploads(app, videos)
     # socket.init_app(app) 需要eventlet服务器
     # cache.init_app(app)  需要redis
     # configure_uploads(app, attachments) config里需要配置

@@ -98,3 +98,21 @@ class UserInfo(Resource):
             abort(400, '文件格式错误或文件名全为中文字符')
         user.save_to_db()
         return 200
+
+
+@api.resource('/follow/<user_id>')
+class UserFollow(Resource):
+    @jwt_required
+    def post(self, user_id):  # 关注其他用户
+        current_user = User.get_current_user()
+        target_user = User.query.get(user_id)
+        current_user.follow(target_user)
+        return 200
+
+    @jwt_required
+    def delete(self, user_id):  # 取消关注其他用户
+        current_user = User.get_current_user()
+        target_user = User.query.get(user_id)
+        print(target_user.id)
+        current_user.unfollow(target_user)
+        return 200

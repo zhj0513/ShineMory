@@ -1,3 +1,5 @@
+from flask_jwt_extended import get_jwt_identity
+
 from app import db
 from app.commons.time_deal import millisecond_timestamp
 from app.extensions import SLBigInteger
@@ -56,3 +58,28 @@ class User(db.Model):
             'fans_num': self.fans.count()
         }
         return user_dict
+
+    @staticmethod
+    def get_current_user():
+        current_user = get_jwt_identity()
+        user_id = current_user.get('id')
+        user = User.query.get(user_id)
+        return user
+
+    def is_following(self, user):
+        if user.id is None:
+            return False
+        return self.follows.filter_by(
+            follow_id=user.id).first() is not None
+
+    def follow(self, user):
+        if not self.is_following(user):
+            f = Follow(fan_id=self.id, follow_id=user.id)
+            db.session.add(f)
+            db.session.commit()
+
+    def unfollow(self, user):
+        if self.is_following(user):
+            f = Follow.query.filter_by(fan_id=self.id, follow_id=user.id).first()
+            db.session.delete(f)  # 批量删除xxx.query.filter_by(xxx).delete(synchronize_session=False)
+            db.session.commit()

@@ -35,6 +35,8 @@ class Config:
     AVATAR_FOLDER = os.path.join(base_dir, 'app', 'static', 'avatar')
     # FLASK-UPLOADS SET SETTING
     UPLOADED_AVATARS_DEST = os.path.join(base_dir, 'app', 'static', 'avatar')
+    UPLOADED_PICS_DEST = os.path.join(base_dir, 'app', 'static', 'article_pic')
+    UPLOADED_VIDEOS_DEST = os.path.join(base_dir, 'app', 'static', 'article_video')
 
 
 class DevelopmentConfig(Config):
