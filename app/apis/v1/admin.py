@@ -5,9 +5,8 @@ from flask_restful import Api, Resource
 from sqlalchemy import or_
 
 from app import db
-from app.apis.v1.socket import update_message_num
 from app.commons.decorators import admin_required
-from app.models import User, Admin, Message
+from app.models import User, Admin, Message, Article
 
 bp = Blueprint('admin', __name__)
 api = Api(bp)
@@ -98,4 +97,24 @@ class SendAll(Resource):
         send_time = round(time.time()*1000)
         message = Message(body=body, time=send_time, is_all=True)
         message.save_to_db()
+        return 200
+
+
+@api.resource('/articleManage')
+class AdminArticleManage(Resource):
+    @jwt_required
+    @admin_required
+    def get(self):
+        user_id = request.args.get('user_id')
+        articles = Article.query.filter_by(user_id=user_id).all()
+        articles_list = [article.to_dict() for article in articles]
+        return articles_list
+
+    @jwt_required
+    @admin_required
+    def delete(self):
+        article_id = request.args.get('article_id')
+        article = Article.query.get(article_id)
+        db.session.delete(article)
+        db.session.commit()
         return 200
