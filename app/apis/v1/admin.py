@@ -5,8 +5,9 @@ from flask_restful import Api, Resource
 from sqlalchemy import or_
 
 from app import db
+from app.apis.v1.socket import update_message_num
 from app.commons.decorators import admin_required
-from app.models import User, Admin
+from app.models import User, Admin, Message
 
 bp = Blueprint('admin', __name__)
 api = Api(bp)
@@ -86,3 +87,15 @@ class AdminLogin(Resource):
         access_token = create_access_token(identity=admin.to_dict())
         result = {'id': admin.id, 'name': admin.username, 'access_token': access_token}
         return result
+
+
+@api.resource('/notify')
+class SendAll(Resource):
+    @jwt_required
+    @admin_required
+    def post(self):  # 管理员发送系统消息(未测试)
+        body = request.json.get('body')
+        send_time = round(time.time()*1000)
+        message = Message(body=body, time=send_time, is_all=True)
+        message.save_to_db()
+        return 200

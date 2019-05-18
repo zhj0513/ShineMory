@@ -18,6 +18,7 @@ class User(db.Model):
     member_since = db.Column(SLBigInteger, default=millisecond_timestamp)
     ban = db.Column(db.Integer, default=0)  # 0:正常 1：封禁
     avatar_src = db.Column(db.String(128))  # 头像路径
+    interest = db.Column(db.String(32))  # "学习,新闻,美食,旅游,娱乐,游戏"之类的字符串
 
     follows = db.relationship('Follow', foreign_keys=[Follow.fan_id], backref=db.backref('fan', lazy='joined'),
                               cascade="all,delete", lazy='dynamic')
@@ -51,6 +52,7 @@ class User(db.Model):
             'username': self.username,
             'address': self.address,
             'about_me': self.about_me,
+            'interest': self.interest,
             'member_since': self.member_since,
             'avatar_src': self.avatar_src,
             'articles_num': self.articles.count(),

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>flask celery demo</title>
+</head>
+<body>
+  <p>SocketIO demo</p>
+</body>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+  var socket = io.connect('http://47.106.249.150:5000/api/v1/socket');
+  /*namespace = '/api/v1/socket';
+  var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);*/
+  /*socket.on('connect', function() {
+      //socket.emit('hello', {data: 'I\'m connected!'});
+  });*/
+
+  socket.on('job', function(message) {
+      console.log(message);
+      socket.emit('haha', {'data': 'haha'});
+  });
+</script>
+</html>

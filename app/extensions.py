@@ -4,10 +4,13 @@ from flask_jwt_extended import JWTManager
 from sqlalchemy import BigInteger
 from sqlalchemy.ext.compiler import compiles
 from flask_uploads import UploadSet, IMAGES, ALL
+from flask_socketio import SocketIO
+
 
 jwt = JWTManager()
 db = SQLAlchemy()
 mail = Mail()
+socket = SocketIO()
 avatars = UploadSet('avatars', IMAGES)
 pics = UploadSet('pics', IMAGES)
 videos = UploadSet('videos', ALL)
