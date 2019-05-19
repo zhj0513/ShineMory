@@ -1,5 +1,6 @@
 from app import db
 from app.extensions import SLBigInteger
+from app.models import User
 
 
 class Comment(db.Model):
@@ -15,11 +16,14 @@ class Comment(db.Model):
     zans = db.relationship('Zan', backref='comment', cascade='all,delete', lazy='dynamic')
 
     def to_dict(self):
+        user = User.query.get(self.user_id)
         comment_dict = {
             'comment_id': self.id,
             'body': self.body,
             'send_time': self.time,
             'user_id': self.user_id,
+            'username': user.username,
+            'avatar_src': user.avatar_src,
             'article_id': self.article_id,
             'zan_num': self.zans.count()
         }

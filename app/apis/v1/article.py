@@ -28,18 +28,29 @@ class ArticleList(Resource):
         return articles_list
 
     @jwt_required
+    def patch(self):  # 上传一张图片
+        pic = request.files['pic']
+        try:
+            filename = pics.save(pic, name=str(post_time) + user.username + '.')
+            pic_src = os.path.join(request.url_root, 'static', 'article_pic', filename)
+        except Exception:
+            abort(400, '文件格式错误或文件名全为中文字符')
+        return {"pic_src": pic_src}
+
+    @jwt_required
     def post(self):  # 发送推文 还差图片上传
         user = User.get_current_user()
         data = request.form
         body = data.get('body')
+        pic_src = data.get('pic_src')
         post_time = int(time.time() * 1000)
 
-        pic = request.files['pic']
-        try:
-            filename = pics.save(pic, name=str(post_time)+user.username+'.')
-            pic_src = os.path.join(request.url_root, 'static', 'article_pic', filename)
-        except Exception:
-            abort(400, '文件格式错误或文件名全为中文字符')
+        # pic = request.files['pic']
+        # try:
+        #     filename = pics.save(pic, name=str(post_time)+user.username+'.')
+        #     pic_src = os.path.join(request.url_root, 'static', 'article_pic', filename)
+        # except Exception:
+        #     abort(400, '文件格式错误或文件名全为中文字符')
         article = Article(body=body, time=post_time, user_id=user.id, pic_src=pic_src, video_src='')
         article.save_to_db()
         return 200

@@ -34,7 +34,7 @@ class UserLogin(Resource):
             abort(400, '该用户已被管理员禁用')
 
         access_token = create_access_token(identity=user.to_dict())
-        result = {'id': user.id, 'username': user.username, 'access_token': access_token}
+        result = {'user_id': user.id, 'username': user.username, 'access_token': access_token}
         return result
 
 
@@ -55,7 +55,8 @@ class UserRegister(Resource):
         if pwd != pwd2:
             abort(400, '请重新设置密码')
         address = data.get('address')
-        user = User(email=email, username=username, password=pwd, address=address)
+        interest = data.get('interest')
+        user = User(email=email, username=username, password=pwd, address=address, interest=interest)
         user.save_to_db()
         send_mail(user.email, '注册成功', username)
         return 200
@@ -82,6 +83,7 @@ class UserInfo(Resource):
             abort(400, '用户名已存在')
         user.address = data.get('address', user.address)
         user.about_me = data.get('about_me', user.about_me)
+        user.interest = data.get('interest', user.interest)
         user.save_to_db()
         return 200
 
@@ -102,7 +104,7 @@ class UserInfo(Resource):
         except Exception:
             abort(400, '文件格式错误或文件名全为中文字符')
         user.save_to_db()
-        return 200
+        return {"user_id": user.id, "avatar_src": user.avatar_src}
 
 
 @api.resource('/follow/<user_id>')
@@ -119,7 +121,7 @@ class UserFollow(Resource):
         target_user = User.query.get(user_id)
         current_user.follow(target_user)
         send_time = round(time.time()*1000)
-        body = current_user.name + '关注了您'
+        body = current_user.username + '关注了您'
         message = Message(body=body, time=send_time, is_all=False, user_id=target_user.id)
         message.save_to_db()
         return 200
@@ -130,7 +132,7 @@ class UserFollow(Resource):
         target_user = User.query.get(user_id)
         current_user.unfollow(target_user)
         send_time = round(time.time() * 1000)
-        body = current_user.name + '对您取消了关注'
+        body = current_user.username + '对您取消了关注'
         message = Message(body=body, time=send_time, is_all=False, user_id=target_user.id)
         message.save_to_db()
         return 200
@@ -155,7 +157,7 @@ class UserRecommend(Resource):
         if recommend_users:
             recommend_users_dict = [user.to_dict() for user in recommend_users]
         else:
-            recommend_users_dict = {}
+            recommend_users_dict = []
         return recommend_users_dict
 
 

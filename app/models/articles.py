@@ -1,5 +1,6 @@
 from app import db
 from app.extensions import SLBigInteger
+from app.models import User
 
 
 class Article(db.Model):
@@ -18,9 +19,12 @@ class Article(db.Model):
     zans = db.relationship('Zan', backref='article', cascade='all,delete', lazy='dynamic')
 
     def to_dict(self):
+        user = User.query.get(self.user_id)
         article_dict = {
             'article_id': self.id,
             'user_id': self.user_id,
+            'username': user.username,
+            'avatar_src': user.avatar_src,
             'body': self.body,
             'pic_src': self.pic_src,
             'video_src': self.video_src,

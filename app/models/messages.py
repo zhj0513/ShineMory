@@ -13,13 +13,13 @@ class Message(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def to_dict(self):
-        comment_dict = {
+        message_dict = {
             'message_id': self.id,
             'body': self.body,
             'send_time': self.time,
             'user_id': self.user_id
         }
-        return comment_dict
+        return message_dict
 
     def save_to_db(self):
         db.session.add(self)

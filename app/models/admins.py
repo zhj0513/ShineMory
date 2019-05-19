@@ -11,7 +11,7 @@ class Admin(db.Model):
 
     def to_dict(self):
         admin_dict = {
-            'id': self.id,
+            'admin_id': self.id,
             'email': self.email,
             'username': self.username
         }

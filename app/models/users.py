@@ -34,7 +34,7 @@ class User(db.Model):
 
     def to_dict(self):
         user_dict = {
-            'id': self.id,
+            'user_id': self.id,
             'email': self.email,
             'username': self.username,
             'address': self.address,
@@ -64,7 +64,7 @@ class User(db.Model):
     @staticmethod
     def get_current_user():
         current_user = get_jwt_identity()
-        user_id = current_user.get('id')
+        user_id = current_user.get('user_id')
         user = User.query.get(user_id)
         return user
 

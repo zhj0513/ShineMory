@@ -9,7 +9,7 @@ bp = Blueprint('socket', __name__)
 @socket.on('connect', namespace='/api/v1/socket')
 def test_connect():
     # 连接事件处理程序可以选择返回False以拒绝连接。这样就可以在此时对客户端进行身份验证。
-    socket.emit('connect_test', 'Socket Connected')
+    socket.emit('connect_test', 'Socket Connected', namespace='/api/v1/socket')
     update_message_num()
     return True
 

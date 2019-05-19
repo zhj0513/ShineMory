@@ -1,3 +1,5 @@
+import time
+
 import re
 from flask import Blueprint, request, abort
 from flask_jwt_extended import create_access_token, jwt_required
@@ -12,7 +14,7 @@ bp = Blueprint('admin', __name__)
 api = Api(bp)
 
 
-@api.resource('/admin')
+@api.resource('/user')
 class AdminOperate(Resource):
     @jwt_required
     @admin_required
@@ -55,7 +57,7 @@ class AdminOperate(Resource):
     @admin_required
     def patch(self):  # 管理员禁用一个用户
         data = request.json
-        id = data.get('id')
+        id = data.get('user_id')
         user = User.query.get(id)
         user.ban = data.get('ban', 0)
         user.save_to_db()
@@ -64,7 +66,7 @@ class AdminOperate(Resource):
     @jwt_required
     @admin_required
     def delete(self):  # 删除一个用户
-        id = request.args.get('id')
+        id = request.args.get('user_id')
         user = User.query.get(id)
         db.session.delete(user)
         db.session.commit()
@@ -84,7 +86,7 @@ class AdminLogin(Resource):
             abort(400, '密码验证错误')
 
         access_token = create_access_token(identity=admin.to_dict())
-        result = {'id': admin.id, 'name': admin.username, 'access_token': access_token}
+        result = {'admin_id': admin.id, 'name': admin.username, 'access_token': access_token}
         return result
 
 
