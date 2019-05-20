@@ -1,6 +1,6 @@
 from app import db
 from app.extensions import SLBigInteger
-from app.models import User
+from app.models.users import User
 
 
 class Article(db.Model):
