@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, request
 
 from app.extensions import socket
 from app.models import User, Message
@@ -30,3 +30,10 @@ def update_message_num():  # 更新消息通知条数
     messages_num = Message.query.filter(or_(Message.user_id == current_user.id, Message.is_all is True)).count()
     socket.emit('message_num', {'message_num': messages_num}, namespace='/api/v1/socket')
     return True
+
+
+@bp.route('/send_public_chat', methods=['POST'])
+def public_chat():
+    message = request.json.get('message')
+    socket.emit('receive_public_chat', message)
+    return 'success'

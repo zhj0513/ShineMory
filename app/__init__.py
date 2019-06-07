@@ -7,7 +7,9 @@ from .extensions import db, mail, jwt, avatars, pics, videos, socket
 
 
 def create_app(config_name):
+    # 默认template_folder='templates',static_folder='static',static_url_path='/static'
     app = Flask(__name__, instance_relative_config=True)
+    # print(str(config[config_name].SECRET_KEY))
     app.config.from_object(config[config_name])
     app.config.from_pyfile('config.py', silent=True)
 

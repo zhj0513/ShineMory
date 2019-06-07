@@ -27,3 +27,5 @@ def send_mail(recipients, subject, body):  # 接收者邮箱，邮件主题，�
     message = Message(subject, sender=sender, recipients=recipients)
     message.html = body
     mail.send(message)
+    return True
+

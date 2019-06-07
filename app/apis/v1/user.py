@@ -178,3 +178,23 @@ class UserMessage(Resource):
         db.session.commit()
         update_message_num()
         return 200
+
+
+@api.resource('/get_followers')
+class UserGetFollowers(Resource):
+    @jwt_required
+    def get(self):  # 获取关注者列表（未测试）
+        current_user = User.get_current_user()
+        followers = current_user.follows.all()
+        followers_list = [user.to_dict() for user in followers] if followers else []
+        return followers_list
+
+
+@api.resource('/get_fans')
+class UserGetFans(Resource):
+    @jwt_required
+    def get(self):  # 获取粉丝列表（未测试）
+        current_user = User.get_current_user()
+        fans = current_user.fans.all()
+        fans_list = [user.to_dict() for user in fans] if fans else []
+        return fans_list
