@@ -94,7 +94,7 @@ class AdminLogin(Resource):
 class SendAll(Resource):
     @jwt_required
     @admin_required
-    def post(self):  # 管理员发送系统消息(未测试)
+    def post(self):  # 管理员发送系统消息
         body = request.json.get('body')
         send_time = round(time.time()*1000)
         message = Message(body=body, time=send_time, is_all=True)
@@ -106,7 +106,7 @@ class SendAll(Resource):
 class AdminArticleManage(Resource):
     @jwt_required
     @admin_required
-    def get(self):  # 管理员获取某个用户的文章
+    def get(self):  # 管理员获取某个用户的文章（未测试）
         user_id = request.args.get('user_id')
         articles = Article.query.filter_by(user_id=user_id).all()
         articles_list = [article.to_dict() for article in articles]
@@ -114,7 +114,7 @@ class AdminArticleManage(Resource):
 
     @jwt_required
     @admin_required
-    def delete(self):  # 管理员删除某个用户的文章
+    def delete(self):  # 管理员删除某个用户的文章（未测试）
         article_id = request.args.get('article_id')
         article = Article.query.get(article_id)
         db.session.delete(article)

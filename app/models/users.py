@@ -12,7 +12,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(32), unique=True)  # 邮箱作为登录账号
     username = db.Column(db.String(32), unique=True)
-    password = db.Column(db.String(32))
+    password = db.Column(db.String(128))
     address = db.Column(db.String(128))
     about_me = db.Column(db.Text)
     member_since = db.Column(SLBigInteger, default=millisecond_timestamp)

@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import *
 from flask_uploads import configure_uploads, patch_request_class
 from werkzeug.utils import find_modules, import_string
 
@@ -22,6 +23,7 @@ def create_app(config_name):
     configure_uploads(app, pics)
     configure_uploads(app, videos)
     socket.init_app(app)  # 需要eventlet服务器
+    CORS(app, supports_credentials=True)
     # cache.init_app(app)  需要redis
     # configure_uploads(app, attachments) config里需要配置
 

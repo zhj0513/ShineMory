@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from sqlalchemy import or_
 
 from app.extensions import socket
 from app.models import User, Message
@@ -27,7 +28,7 @@ def test_send(json):
 
 def update_message_num():  # 更新消息通知条数
     current_user = User.get_current_user()
-    messages_num = Message.query.filter(or_(Message.user_id == current_user.id, Message.is_all is True)).count()
+    messages_num = Message.query.filter(or_(Message.user_id == current_user.id, Message.is_all == 1)).count()
     socket.emit('message_num', {'message_num': messages_num}, namespace='/api/v1/socket')
     return True
 

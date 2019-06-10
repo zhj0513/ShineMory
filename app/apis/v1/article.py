@@ -17,9 +17,10 @@ class ArticleList(Resource):
     @jwt_required
     def get(self):  # 获取推文列表 is_self参数决定获取所有人还是自己的推文
         user = User.get_current_user()
-        is_self = request.args.get('is_self')
-        if not is_self:
-            follow_ids = [user.id for user in user.follows.all()] if user.follows.all() else []  # 所有关注者的id
+        is_self = request.args.get('is_self', 0)
+        is_self = int(is_self)
+        follow_ids = [follow.follow_id for follow in user.follows.all()] if user.follows.all() else []
+        if is_self == 0:
             follow_ids.append(user.id)  # 自己和关注着的id
         else:
             follow_ids = [user.id]
@@ -29,6 +30,8 @@ class ArticleList(Resource):
 
     @jwt_required
     def patch(self):  # 上传一张图片
+        user = User.get_current_user()
+        post_time = int(time.time() * 1000)
         pic = request.files['pic']
         try:
             filename = pics.save(pic, name=str(post_time) + user.username + '.')
@@ -40,9 +43,9 @@ class ArticleList(Resource):
     @jwt_required
     def post(self):  # 发送推文 还差图片上传
         user = User.get_current_user()
-        data = request.form
+        data = request.json
         body = data.get('body')
-        pic_src = data.get('pic_src')
+        pic_src = data.get('pic_src', "")
         post_time = int(time.time() * 1000)
 
         # pic = request.files['pic']

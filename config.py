@@ -30,7 +30,7 @@ class Config:
     # SQLALCHEMY SETTING
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
     # STATIC FILES SETTING
     AVATAR_FOLDER = os.path.join(base_dir, 'app', 'static', 'avatar')
     # FLASK-UPLOADS SET SETTING
