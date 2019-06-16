@@ -12,6 +12,22 @@ bp = Blueprint('article', __name__)
 api = Api(bp)
 
 
+@api.resource('/pic')
+class PicUpload(Resource):
+    @jwt_required
+    def post(self):  # 上传一张图片
+        user = User.get_current_user()
+        post_time = int(time.time() * 1000)
+        pic = request.files['pic']
+        try:
+            filename = pics.save(pic, name=str(post_time) + user.username + '.')
+            # pic_src = os.path.join(request.url_root, 'static', 'article_pic', filename)
+            pic_src = os.path.join('http://47.106.249.150:5000', 'static', 'article_pic', filename)
+        except Exception:
+            abort(400, '文件格式错误或文件名全为中文字符')
+        return {"pic_src": pic_src}
+
+
 @api.resource('/')
 class ArticleList(Resource):
     @jwt_required
@@ -24,21 +40,9 @@ class ArticleList(Resource):
             follow_ids.append(user.id)  # 自己和关注着的id
         else:
             follow_ids = [user.id]
-        articles = Article.query.filter(Article.user_id.in_(follow_ids)).all()
+        articles = Article.query.filter(Article.user_id.in_(follow_ids)).order_by(Article.time.desc()).all()
         articles_list = [article.to_dict() for article in articles]
         return articles_list
-
-    @jwt_required
-    def patch(self):  # 上传一张图片
-        user = User.get_current_user()
-        post_time = int(time.time() * 1000)
-        pic = request.files['pic']
-        try:
-            filename = pics.save(pic, name=str(post_time) + user.username + '.')
-            pic_src = os.path.join(request.url_root, 'static', 'article_pic', filename)
-        except Exception:
-            abort(400, '文件格式错误或文件名全为中文字符')
-        return {"pic_src": pic_src}
 
     @jwt_required
     def post(self):  # 发送推文 还差图片上传

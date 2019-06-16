@@ -22,9 +22,9 @@ class AdminOperate(Resource):
         search = request.args.get('search')
         if search:
             users = User.query.filter(
-                or_(User.username.like('%' + search + '%'), User.email.like('%' + search + '%'))).all()
+                or_(User.username.like('%' + search + '%'), User.email.like('%' + search + '%'))).order_by(User.member_since.desc()).all()
         else:
-            users = User.query.all()
+            users = User.query.order_by(User.member_since.desc()).all()
         return [user.to_dict() for user in users], 200
 
     @jwt_required

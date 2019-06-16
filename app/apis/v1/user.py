@@ -72,6 +72,15 @@ class UserInfo(Resource):
     def get(self):  # 获取用户个人信息
         current_user = get_jwt_identity()
         username = current_user.get('username')
+        if username == 'zhj':
+            return {
+            'admin_id': 1,
+            'email': '1264728987@qq.com',
+            'username': 'zhj',
+            'address': '杭州',
+            'about_me': '管理员',
+            'member_since': 1560073462919,
+            'avatar_src': 'http://47.106.249.150:5000/static/avatar/Anna.png'}
         user = User.query.filter_by(username=username).first()
         return user.to_user_info_dict()
 
